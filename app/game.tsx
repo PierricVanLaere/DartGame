@@ -50,8 +50,8 @@ export default function GameScreen() {
         if (!isNaN(firstNum) && !isNaN(secondNum) && !isNaN(thirdNum)) {
             const score = (firstNum * firstM) + (secondNum * secondM) + (thirdNum * thirdM);
             const updatedTable = { ...table };
-            if (updatedTable[currentPlayer][0] + score < parseInt(variant)){
-                updatedTable[currentPlayer][0] += score;
+            if (updatedTable[currentPlayer][1] - score > 0 ){
+                updatedTable[currentPlayer][0] = score;
                 updatedTable[currentPlayer][1] -= score;
                 setTable(updatedTable);
                 setCurrentPlayerIndex((prevIndex) => (prevIndex + 1) % size);
@@ -63,8 +63,9 @@ export default function GameScreen() {
                 setFirstMult('1')
                 setSecondMult('1')
                 setThirdMult('1')
-            } else if (updatedTable[currentPlayer][0] + score > parseInt(variant)){
+            } else if (updatedTable[currentPlayer][1] - score < 0){
                 setCurrentPlayerIndex((prevIndex) => (prevIndex + 1) % size);
+                updatedTable[currentPlayer][0] = 0;
                 onChangeFirst('');
                 onChangeSecond('');
                 onChangeThird('');
@@ -261,7 +262,7 @@ function Scores({ table }: { table: { [key: string]: number[] } }) {
             <Text style={styles.scoresTitle}>Scores</Text>
             {Object.entries(table).map(([player, scores]) => (
                 <Text key={player} style={styles.scoreText}>
-                    {player}: {`Total: ${scores[0]} | Restant : ${scores[1]}`}
+                    {player}: {`Dernier tour: ${scores[0]} | Restant : ${scores[1]}`}
                 </Text>
             ))}
         </View>
