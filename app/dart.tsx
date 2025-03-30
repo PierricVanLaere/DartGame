@@ -38,9 +38,10 @@ function PlayersNumber({variant} : {variant: string}){
   const handleStartPress = () => {
     const num = parseInt(number);
     if (!isNaN(num) && num >= 1) {
+      const game = "flechettes"
       router.push({
-        pathname: '/game',
-        params: { variant, num },
+        pathname: '/names',
+        params: { game, num, variant},
       });
     } else {
       setError(true);

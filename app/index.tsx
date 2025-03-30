@@ -47,11 +47,12 @@ function PlayersNumber(){
   const [error, setError] = useState(false)
 
   const handleStartPress = () => {
+    const game = "petanque"
     const num = parseInt(number);
     if (!isNaN(num) && num >= 1) {
       router.push({
-        pathname: '/petanque',
-        params: {num},
+        pathname: '/names',
+        params: {game, num},
       });
     } else {
       setError(true);

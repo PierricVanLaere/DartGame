@@ -4,12 +4,13 @@ import { Text, View, TouchableOpacity, TextInput, ScrollView } from 'react-nativ
 import { styles } from "../constants/styles"
 
 export default function Petanque(){
-    const {num} = useLocalSearchParams<{num: string }>();
+    const {jsonPlayers, num} = useLocalSearchParams<{jsonPlayers : string,num: string }>();
+    const playersNames = JSON.parse(jsonPlayers as string)
     const size = parseInt(num, 10);
     const [table, setTable] = useState(() => {
         const initialTable: { [key: string]: number[] } = {};
-        for (let i = 1; i <= size; i++) {
-            const key = `joueur ${i} `;
+        for (let i = 0; i < size; i++) {
+            const key = playersNames[i];
             initialTable[key] = [0];
         }
         return initialTable;
@@ -25,8 +26,8 @@ export default function Petanque(){
     const restartGame = () => {
         setTable(() => {
             const initialTable: { [key: string]: number[] } = {};
-            for (let i = 1; i <= size; i++) {
-                const key = `joueur ${i}`;
+            for (let i = 0; i < size; i++) {
+                const key = playersNames[i];
                 initialTable[key] = [0, 13];
             }
             return initialTable;
@@ -85,7 +86,7 @@ export default function Petanque(){
                     />
                     {!isFinish && (
                         <View>
-                            <Text style={styles.text}>Pour le joueur : </Text>
+                            <Text style={styles.text}>Pour</Text>
                             <View style={styles.buttonContainer}>
                                 {playerList.map((player, index) => (
                                     <TouchableOpacity
@@ -116,7 +117,7 @@ export default function Petanque(){
             </TouchableOpacity>
 
             {error && (
-                <Text style={styles.errorText}>Aucun score saisie !</Text>
+                <Text style={styles.errorText}>Aucun score saisi !</Text>
             )}
             {errorPlayer && (
                 <Text style={styles.errorText}>Aucun joueur séléctionné !</Text>
@@ -136,7 +137,7 @@ function Scores({ table }: { table: { [key: string]: number[] } }) {
         <View style={[styles.scoresContainer]}>
             <Text style={styles.scoresTitle}>Scores</Text>
             <ScrollView contentContainerStyle={[styles.scrollViewContent]}>
-                {Object.entries(table).map(([player, scores]) => (
+                {Object.entries(table).sort(([, scoresA], [, scoresB]) => scoresB[0] - scoresA[0]).map(([player, scores]) => (
                     <Text key={player} style={styles.scoreText}>
                         {player}: {`Score : ${scores[0]}`}
                     </Text>

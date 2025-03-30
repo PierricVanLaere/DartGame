@@ -137,7 +137,7 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         paddingHorizontal: 10,
-        width: '100%', // Changé pour prendre toute la largeur disponible
+        width: '100%', 
         textAlign: 'center',
         marginBottom: 10,
     },
@@ -160,16 +160,16 @@ export const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'space-around',
-        width: '100%', // Changé pour prendre toute la largeur disponible
+        justifyContent: 'space-between',
+        width: '100%', 
     },
     button: {
         padding: 10,
         borderRadius: 5,
         borderWidth: 1,
         borderColor: '#ccc',
-        flex: 1, // Ajouté pour que les boutons prennent la même taille
-        alignItems: 'center', // Centrer le texte
+        flex: 1, 
+        alignItems: 'center',
     },
     buttonX2: {
         backgroundColor: 'green',
@@ -190,6 +190,8 @@ export const styles = StyleSheet.create({
         margin: 5,
         backgroundColor: '#007BFF',
         borderRadius: 5,
+        flex: 1,
+        maxWidth: '48%'
     },
     playerButtonSelected: {
         backgroundColor: '#0056b3',
@@ -199,6 +201,7 @@ export const styles = StyleSheet.create({
     playerButtonText: {
         color: '#fff',
         fontSize: 16,
+        textAlign: 'center',
     },
     scrollViewContent: {
         paddingVertical: 10,
@@ -229,5 +232,14 @@ export const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
         fontWeight: '600',
+    },
+    scoreRow: {
+        paddingVertical: 5,
+        width: '100%',
+    },
+    currentPlayerRow: {
+        backgroundColor: '#ffd700',
+        borderRadius: 5,
+        paddingHorizontal: 10,
     },
 });

@@ -4,18 +4,19 @@ import { useState } from "react";
 import { styles } from "../constants/styles"
 
 export default function GameScreen() {
-    const { variant, num } = useLocalSearchParams<{ variant: string; num: string }>();
-    const size = parseInt(num, 10);
+    const { jsonPlayers, num, variant } = useLocalSearchParams < { jsonPlayers: string, num: string, variant: string}>();
+    const size = parseInt(num, 10)
+    const playersNames = JSON.parse(jsonPlayers as string)
     const [table, setTable] = useState(() => {
         const initialTable: { [key: string]: number[] } = {};
-        for (let i = 1; i <= size; i++) {
-            const key = `joueur ${i}`;
+        for (let i = 0; i < size; i++) {
+            const key = playersNames[i];
             initialTable[key] = [0, parseInt(variant)];
         }
         return initialTable;
     });
     const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
-    const currentPlayer = `joueur ${currentPlayerIndex + 1}`;
+    const currentPlayer = playersNames[currentPlayerIndex]
     const [error, setError] = useState(false);
     const [tooHigh, setTooHigh] = useState(false);
     const [isFinish, setIsFinish] = useState(false);
@@ -23,8 +24,8 @@ export default function GameScreen() {
     const restartGame = () => {
         setTable(() => {
             const initialTable: { [key: string]: number[] } = {};
-            for (let i = 1; i <= size; i++) {
-                const key = `joueur ${i}`;
+            for (let i = 0; i < size; i++) {
+                const key = playersNames[i];
                 initialTable[key] = [0, parseInt(variant)];
             }
             return initialTable;
@@ -75,6 +76,8 @@ export default function GameScreen() {
                 setSecondMult('1')
                 setThirdMult('1')
             } else {
+                updatedTable[currentPlayer][0] = score;
+                updatedTable[currentPlayer][1] -= score;
                 setIsFinish(true);
                 setTooHigh(false);
                 setError(false);
@@ -246,7 +249,7 @@ export default function GameScreen() {
             {tooHigh && (
                 <Text style={styles.errorText}>Score trop élevé !</Text>
             )}
-            <Scores table={table}/>
+            <Scores table={table} current = {currentPlayer}/>
             {isFinish && (
                 <TouchableOpacity style={styles.restartButton} onPress={restartGame}>
                     <Text style={styles.restartButtonText}>Redémarrer le jeu</Text>
@@ -256,17 +259,25 @@ export default function GameScreen() {
     );
 }
 
-function Scores({ table }: { table: { [key: string]: number[] } }) {
+function Scores({ table, current }: { table: { [key: string]: number[] }, current: string }) {
     return (
         <View style={styles.scoresContainer}>
             <Text style={styles.scoresTitle}>Scores</Text>
-            <ScrollView contentContainerStyle={[styles.scrollViewContent]}>
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 {Object.entries(table).map(([player, scores]) => (
-                    <Text key={player} style={styles.scoreText}>
-                        {player}: {`Dernier tour: ${scores[0]} | Restant : ${scores[1]}`}
-                    </Text>
+                    <View
+                        key={player}
+                        style={[
+                            styles.scoreRow,
+                            player === current && styles.currentPlayerRow,
+                        ]}
+                    >
+                        <Text style={styles.scoreText}>
+                            {player}: {`Dernier tour: ${scores[0]} | Restant : ${scores[1]}`}
+                        </Text>
+                    </View>
                 ))}
             </ScrollView>
         </View>
-    )
+    );
 }
