@@ -136,8 +136,9 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         paddingHorizontal: 10,
-        width: '30%',
+        width: '100%', // Changé pour prendre toute la largeur disponible
         textAlign: 'center',
+        marginBottom: 10,
     },
     restartButton: {
         backgroundColor: '#ffc107',
@@ -154,5 +155,32 @@ export const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
         fontWeight: '600',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '100%', // Changé pour prendre toute la largeur disponible
+    },
+    button: {
+        padding: 10,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        flex: 1, // Ajouté pour que les boutons prennent la même taille
+        alignItems: 'center', // Centrer le texte
+    },
+    buttonX2: {
+        backgroundColor: 'green',
+    },
+    buttonX3: {
+        backgroundColor: 'red',
+    },
+    selectedButton: {
+        borderColor: 'blue',
+        borderWidth: 2,
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
     },
 });
