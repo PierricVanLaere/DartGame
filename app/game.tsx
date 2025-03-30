@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
-import { Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useState } from "react";
 import { styles } from "../constants/styles"
 
@@ -238,10 +238,10 @@ export default function GameScreen() {
 
             <TouchableOpacity style={styles.validateButton} onPress={handleNextTurn} disabled = {isFinish}>
                 <Text style={styles.validateButtonText}>Valider le tour</Text>
-                
             </TouchableOpacity>
+
             {error && (
-                <Text style={styles.errorText}>Merci de ne rentrer que des nombres !</Text>
+                <Text style={styles.errorText}>Les 3 champs doivent être remplis !</Text>
             )}
             {tooHigh && (
                 <Text style={styles.errorText}>Score trop élevé !</Text>
@@ -260,11 +260,13 @@ function Scores({ table }: { table: { [key: string]: number[] } }) {
     return (
         <View style={styles.scoresContainer}>
             <Text style={styles.scoresTitle}>Scores</Text>
-            {Object.entries(table).map(([player, scores]) => (
-                <Text key={player} style={styles.scoreText}>
-                    {player}: {`Dernier tour: ${scores[0]} | Restant : ${scores[1]}`}
-                </Text>
-            ))}
+            <ScrollView contentContainerStyle={[styles.scrollViewContent]}>
+                {Object.entries(table).map(([player, scores]) => (
+                    <Text key={player} style={styles.scoreText}>
+                        {player}: {`Dernier tour: ${scores[0]} | Restant : ${scores[1]}`}
+                    </Text>
+                ))}
+            </ScrollView>
         </View>
     )
 }

@@ -118,6 +118,7 @@ export const styles = StyleSheet.create({
         marginTop: 20,
         width: '100%',
         alignItems: 'center',
+        flex: 1,
     },
     scoresTitle: {
         fontSize: 20,
@@ -158,6 +159,7 @@ export const styles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: 'row',
+        flexWrap: 'wrap',
         justifyContent: 'space-around',
         width: '100%', // Changé pour prendre toute la largeur disponible
     },
@@ -182,5 +184,50 @@ export const styles = StyleSheet.create({
     buttonText: {
         color: 'white',
         fontWeight: 'bold',
+    },
+    playerButton: {
+        padding: 10,
+        margin: 5,
+        backgroundColor: '#007BFF',
+        borderRadius: 5,
+    },
+    playerButtonSelected: {
+        backgroundColor: '#0056b3',
+        borderWidth: 2,
+        borderColor: '#ffd700',
+    },
+    playerButtonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
+    scrollViewContent: {
+        paddingVertical: 10,
+    },
+    text: {
+        fontSize: 16,
+        color: '#333',
+        marginVertical: 5,
+        textAlign: "center",
+    },
+    label: {
+        fontSize: 18,
+        marginBottom: 5,
+        color: '#555',
+    },
+    saveButton: {
+        backgroundColor: '#007BFF',
+        padding: 15,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 20,
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 5,
+    },
+    saveButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '600',
     },
 });
