@@ -171,11 +171,14 @@ export const styles = StyleSheet.create({
         flex: 1, 
         alignItems: 'center',
     },
-    buttonX2: {
-        backgroundColor: 'green',
+    buttonXRed: {
+        backgroundColor: '#e62d37',
     },
-    buttonX3: {
-        backgroundColor: 'red',
+    buttonXGreen: {
+        backgroundColor: '#038e42',
+    },
+    buttonXBlack: {
+        backgroundColor: 'black',
     },
     selectedButton: {
         borderColor: 'blue',

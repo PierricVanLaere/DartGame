@@ -1,4 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
+import React, { useRef } from 'react';
 import { Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useState } from "react";
 import { styles } from "../constants/styles"
@@ -40,6 +41,10 @@ export default function GameScreen() {
         setThirdMult('1')
     };
 
+    const firstInputRef = useRef<TextInput>(null);
+    const secondInputRef = useRef<TextInput>(null);
+    const thirdInputRef = useRef<TextInput>(null);
+
     const handleNextTurn = () => {
         const firstNum = parseInt(first);
         const firstM = parseInt(firstMult);
@@ -64,6 +69,7 @@ export default function GameScreen() {
                 setFirstMult('1')
                 setSecondMult('1')
                 setThirdMult('1')
+                firstInputRef.current!!.focus()
             } else if (updatedTable[currentPlayer][1] - score < 0){
                 setCurrentPlayerIndex((prevIndex) => (prevIndex + 1) % size);
                 updatedTable[currentPlayer][0] = 0;
@@ -102,6 +108,8 @@ export default function GameScreen() {
         '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
         '25', '50'
     ]);
+    const red = ['20','18','13','10','2','3','7','8','14','12']
+    const green = ['1','4','6','15','17','19','16','11','9','5']
 
     return (
         <View style={styles.container}>
@@ -113,6 +121,7 @@ export default function GameScreen() {
             <View style={styles.inputRow}>
                 <View style={{ width: '33%' }}>
                     <TextInput
+                        ref={firstInputRef}
                         style={styles.scoreInput}
                         onChangeText={(text) => {
                             if (validValues.has(text) || text == '') {
@@ -121,13 +130,13 @@ export default function GameScreen() {
                         }}
                         value={first}
                         keyboardType="numeric"
+                        onSubmitEditing={() => secondInputRef.current!!.focus()}
                     />
                     <View style={styles.buttonContainer}>
-
                         <TouchableOpacity
                             style={[
                                 styles.button,
-                                styles.buttonX2,
+                                red.includes(first) ? styles.buttonXRed : green.includes(first) ? styles.buttonXGreen : styles.buttonXBlack,
                                 firstMult === '2' && styles.selectedButton,
                             ]}
                             onPress={() => {
@@ -136,11 +145,10 @@ export default function GameScreen() {
                         >
                             <Text style={styles.buttonText}>X2</Text>
                         </TouchableOpacity>
-
                         <TouchableOpacity
                             style={[
                                 styles.button,
-                                styles.buttonX3,
+                                red.includes(first) ? styles.buttonXRed : green.includes(first) ? styles.buttonXGreen : styles.buttonXBlack,
                                 firstMult === '3' && styles.selectedButton,
                             ]}
                             onPress={() => {
@@ -149,12 +157,12 @@ export default function GameScreen() {
                         >
                             <Text style={styles.buttonText}>X3</Text>
                         </TouchableOpacity>
-
                     </View>
                 </View>
 
                 <View style={{ width: '33%' }}>
                     <TextInput
+                        ref={secondInputRef}
                         style={styles.scoreInput}
                         onChangeText={(text) => {
                             if (validValues.has(text) || text == '') {
@@ -163,13 +171,13 @@ export default function GameScreen() {
                         }}
                         value={second}
                         keyboardType="numeric"
+                        onSubmitEditing={() => thirdInputRef.current!!.focus()}
                     />
                     <View style={styles.buttonContainer}>
-
                         <TouchableOpacity
                             style={[
                                 styles.button,
-                                styles.buttonX2,
+                                red.includes(second) ? styles.buttonXRed : green.includes(second) ? styles.buttonXGreen : styles.buttonXBlack,
                                 secondMult === '2' && styles.selectedButton,
                             ]}
                             onPress={() => {
@@ -178,11 +186,10 @@ export default function GameScreen() {
                         >
                             <Text style={styles.buttonText}>X2</Text>
                         </TouchableOpacity>
-
                         <TouchableOpacity
                             style={[
                                 styles.button,
-                                styles.buttonX3,
+                                red.includes(second) ? styles.buttonXRed : green.includes(second) ? styles.buttonXGreen : styles.buttonXBlack,
                                 secondMult === '3' && styles.selectedButton,
                             ]}
                             onPress={() => {
@@ -191,12 +198,12 @@ export default function GameScreen() {
                         >
                             <Text style={styles.buttonText}>X3</Text>
                         </TouchableOpacity>
-
                     </View>
                 </View>
 
                 <View style={{ width: '33%' }}>
                     <TextInput
+                        ref={thirdInputRef}
                         style={styles.scoreInput}
                         onChangeText={(text) => {
                             if (validValues.has(text) || text == '') {
@@ -205,13 +212,13 @@ export default function GameScreen() {
                         }}
                         value={third}
                         keyboardType="numeric"
+                        onSubmitEditing={() => firstInputRef.current!!.focus()}
                     />
                     <View style={styles.buttonContainer}>
-
                         <TouchableOpacity
                             style={[
                                 styles.button,
-                                styles.buttonX2,
+                                red.includes(third) ? styles.buttonXRed : green.includes(third) ? styles.buttonXGreen : styles.buttonXBlack,
                                 thirdMult === '2' && styles.selectedButton,
                             ]}
                             onPress={() => {
@@ -220,11 +227,10 @@ export default function GameScreen() {
                         >
                             <Text style={styles.buttonText}>X2</Text>
                         </TouchableOpacity>
-
                         <TouchableOpacity
                             style={[
                                 styles.button,
-                                styles.buttonX3,
+                                red.includes(third) ? styles.buttonXRed : green.includes(third) ? styles.buttonXGreen : styles.buttonXBlack,
                                 thirdMult === '3' && styles.selectedButton,
                             ]}
                             onPress={() => {
@@ -233,10 +239,8 @@ export default function GameScreen() {
                         >
                             <Text style={styles.buttonText}>X3</Text>
                         </TouchableOpacity>
-
                     </View>
                 </View>
-
             </View>
 
             <TouchableOpacity style={styles.validateButton} onPress={handleNextTurn} disabled = {isFinish}>
