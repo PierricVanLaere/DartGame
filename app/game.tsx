@@ -13,7 +13,7 @@ export default function GameScreen() {
         const initialTable: { [key: string]: number[] } = {};
         for (let i = 0; i < size; i++) {
             const key = playersNames[i];
-            initialTable[key] = [0, parseInt(variant)];
+            initialTable[key] = [0, parseInt(variant), parseInt(variant)];
         }
         return initialTable;
     });
@@ -28,7 +28,7 @@ export default function GameScreen() {
             const initialTable: { [key: string]: number[] } = {};
             for (let i = 0; i < size; i++) {
                 const key = playersNames[i];
-                initialTable[key] = [0, parseInt(variant)];
+                initialTable[key] = [0, parseInt(variant), parseInt(variant)];
             }
             return initialTable;
         });
@@ -40,6 +40,7 @@ export default function GameScreen() {
         setFirstMult('1')
         setSecondMult('1')
         setThirdMult('1')
+        setValidTurn(false)
     };
 
     const router = useRouter();
@@ -73,9 +74,27 @@ export default function GameScreen() {
         return () => backHandler.remove();
     }, []);
 
+
     const firstInputRef = useRef<TextInput>(null);
     const secondInputRef = useRef<TextInput>(null);
     const thirdInputRef = useRef<TextInput>(null);
+
+    const [validTurn, setValidTurn] = useState(false)
+    useEffect(() => {
+        if (validTurn) {
+            Alert.alert("Valider", "Voulez-vous valider le score de ce tour ?", [
+                {
+                    text: "Annuler",
+                    onPress: () => setValidTurn(false),
+                    style: "cancel"
+                },
+                {
+                    text: "Oui",
+                    onPress: handleNextTurn
+                }
+            ]);
+        }
+    }, [validTurn]);
 
     const handleNextTurn = () => {
         const firstNum = parseInt(first);
@@ -85,7 +104,7 @@ export default function GameScreen() {
         const thirdNum = parseInt(third);
         const thirdM = parseInt(thirdMult);
 
-        if (!isNaN(firstNum) && !isNaN(secondNum) && !isNaN(thirdNum)) {
+        if (!isNaN(firstNum) && !isNaN(secondNum) && !isNaN(thirdNum)) { // Score correct
             const score = (firstNum * firstM) + (secondNum * secondM) + (thirdNum * thirdM);
             const updatedTable = { ...table };
             if (updatedTable[currentPlayer][1] - score > 0 ){
@@ -101,10 +120,13 @@ export default function GameScreen() {
                 setFirstMult('1')
                 setSecondMult('1')
                 setThirdMult('1')
+                setValidTurn(false)
                 firstInputRef.current!!.focus()
-            } else if (updatedTable[currentPlayer][1] - score < 0){
+            } else if (updatedTable[currentPlayer][1] - score < 0){ // Score trop élevé
                 setCurrentPlayerIndex((prevIndex) => (prevIndex + 1) % size);
                 updatedTable[currentPlayer][0] = 0;
+                updatedTable[currentPlayer][2] = updatedTable[currentPlayer][1]
+                setTable(updatedTable);
                 onChangeFirst('');
                 onChangeSecond('');
                 onChangeThird('');
@@ -113,19 +135,22 @@ export default function GameScreen() {
                 setFirstMult('1')
                 setSecondMult('1')
                 setThirdMult('1')
-            } else {
+                setValidTurn(false)
+            } else { // Partie finie
                 updatedTable[currentPlayer][0] = score;
                 updatedTable[currentPlayer][1] -= score;
+                setTable(updatedTable);
                 setIsFinish(true);
                 setTooHigh(false);
                 setError(false);
             }
-        } else {
+        } else { // Erreur de saisie
             setTooHigh(false);
             setError(true);
             setFirstMult('1')
             setSecondMult('1')
             setThirdMult('1')
+            setValidTurn(false)
         }
     };
 
@@ -142,10 +167,26 @@ export default function GameScreen() {
     ]);
     const red = ['20','18','13','10','2','3','7','8','14','12']
     const green = ['1','4','6','15','17','19','16','11','9','5']
+    const [temporaryScore, setTemporaryScore] = useState(table[currentPlayer][1])
 
     useEffect(() => {
-        
-    })
+        setTemporaryScore(table[currentPlayer][1])
+    }, [currentPlayer])
+
+    useEffect(() => {
+        const updatedTable = { ...table };
+        updatedTable[currentPlayer][2] = updatedTable[currentPlayer][1]
+        if (first != ''){
+            updatedTable[currentPlayer][2] = (temporaryScore-Number(first)*Number(firstMult))
+        }
+        if (second != '') {
+            updatedTable[currentPlayer][2] = (updatedTable[currentPlayer][2] - Number(second) * Number(secondMult))
+        }
+        if (third != '') {
+            updatedTable[currentPlayer][2] = (updatedTable[currentPlayer][2] - Number(third) * Number(thirdMult))
+        }
+        setTable(updatedTable);
+    }, [first, firstMult, second, secondMult, third, thirdMult])
 
     return (
         <View style={styles.container}>
@@ -174,7 +215,7 @@ export default function GameScreen() {
                             style={[
                                 styles.button,
                                 red.includes(first) ? styles.buttonXRed : green.includes(first) ? styles.buttonXGreen : styles.buttonXBlack,
-                                firstMult === '2' && styles.selectedButton,
+                                firstMult === '2' && first != '' && styles.selectedButton,
                             ]}
                             onPress={() => {
                                 setFirstMult(firstMult === '2' ? '1' : '2');
@@ -187,7 +228,7 @@ export default function GameScreen() {
                             style={[
                                 styles.button,
                                 red.includes(first) ? styles.buttonXRed : green.includes(first) ? styles.buttonXGreen : styles.buttonXBlack,
-                                firstMult === '3' && styles.selectedButton,
+                                firstMult === '3' && first != '' && styles.selectedButton,
                             ]}
                             onPress={() => {
                                 setFirstMult(firstMult === '3' ? '1' : '3');
@@ -217,7 +258,7 @@ export default function GameScreen() {
                             style={[
                                 styles.button,
                                 red.includes(second) ? styles.buttonXRed : green.includes(second) ? styles.buttonXGreen : styles.buttonXBlack,
-                                secondMult === '2' && styles.selectedButton,
+                                secondMult === '2' && second!= '' && styles.selectedButton,
                             ]}
                             onPress={() => {
                                 setSecondMult(secondMult === '2' ? '1' : '2');
@@ -230,7 +271,7 @@ export default function GameScreen() {
                             style={[
                                 styles.button,
                                 red.includes(second) ? styles.buttonXRed : green.includes(second) ? styles.buttonXGreen : styles.buttonXBlack,
-                                secondMult === '3' && styles.selectedButton,
+                                secondMult === '3' && second != '' && styles.selectedButton,
                             ]}
                             onPress={() => {
                                 setSecondMult(secondMult === '3' ? '1' : '3');
@@ -260,7 +301,7 @@ export default function GameScreen() {
                             style={[
                                 styles.button,
                                 red.includes(third) ? styles.buttonXRed : green.includes(third) ? styles.buttonXGreen : styles.buttonXBlack,
-                                thirdMult === '2' && styles.selectedButton,
+                                thirdMult === '2' && third != '' && styles.selectedButton,
                             ]}
                             onPress={() => {
                                 setThirdMult(thirdMult === '2' ? '1' : '2');
@@ -273,7 +314,7 @@ export default function GameScreen() {
                             style={[
                                 styles.button,
                                 red.includes(third) ? styles.buttonXRed : green.includes(third) ? styles.buttonXGreen : styles.buttonXBlack,
-                                thirdMult === '3' && styles.selectedButton,
+                                thirdMult === '3' && third != '' && styles.selectedButton,
                             ]}
                             onPress={() => {
                                 setThirdMult(thirdMult === '3' ? '1' : '3');
@@ -285,7 +326,7 @@ export default function GameScreen() {
                 </View>
             </View>
 
-            <TouchableOpacity style={styles.validateButton} onPress={handleNextTurn} disabled = {isFinish}>
+            <TouchableOpacity style={styles.validateButton} onPress={() => setValidTurn(true)} disabled = {isFinish}>
                 <Text style={styles.validateButtonText}>Valider le tour</Text>
             </TouchableOpacity>
 
@@ -295,7 +336,7 @@ export default function GameScreen() {
             {tooHigh && (
                 <Text style={styles.errorText}>Score trop élevé !</Text>
             )}
-            <Scores table={table} current = {currentPlayer}/>
+            <Scores table={table} current={currentPlayer}/>
             {isFinish && (
                 <View style={styles.container}>
                     <TouchableOpacity style={styles.restartButton} onPress={restartGame}>
@@ -311,7 +352,7 @@ export default function GameScreen() {
     );
 }
 
-function Scores({ table, current }: { table: { [key: string]: number[] }, current: string }) {
+function Scores({ table, current}: { table: { [key: string]: number[] }, current: string }) {
     return (
         <View style={styles.scoresContainer}>
             <Text style={styles.scoresTitle}>Scores</Text>
@@ -325,7 +366,7 @@ function Scores({ table, current }: { table: { [key: string]: number[] }, curren
                         ]}
                     >
                         <Text style={styles.scoreText}>
-                            {player}: {`Dernier tour: ${scores[0]} | Restant : ${scores[1]}`}
+                            {player}: {`Dernier tour: ${scores[0]} | Restant : ${scores[2]},`}
                         </Text>
                     </View>
                 ))}

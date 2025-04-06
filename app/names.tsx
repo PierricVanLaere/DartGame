@@ -50,7 +50,7 @@ export default function Name() {
                             style={styles.input}
                             value={name}
                             onChangeText={(text) => handleNameChange({ index, name: text })}
-                            placeholder={`Nom du joueur ${index + 1}`}
+                            placeholder={`Nom joueur/équipe ${index + 1}`}
                         />
                     </View>
                 ))}
