@@ -18,7 +18,7 @@ export default function Name() {
     };
 
     const handleSaveNames = () => {
-        const finalNames = playerNames.map((name, i) => name === '' ? `Joueur ${i + 1}` : name);
+        const finalNames = playerNames.map((name, i) => name === '' ? `J ${i + 1}` : name);
         const jsonPlayers = JSON.stringify(finalNames)
         switch(game){
             case "petanque":{

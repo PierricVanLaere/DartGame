@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { useLocalSearchParams } from 'expo-router';
-import { Text, View, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import { useState, useEffect } from "react";
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Text, View, TouchableOpacity, TextInput, ScrollView, BackHandler, Alert } from 'react-native';
 import { styles } from "../constants/styles"
 
 export default function Petanque(){
@@ -36,6 +36,37 @@ export default function Petanque(){
         setWinner('')
         setIsFinish(false);
     };
+    const router = useRouter();
+
+    const changeGame = () => {
+        router.push({
+            pathname: '/',
+        });
+    }
+
+    useEffect(() => {
+        const backAction = () => {
+            Alert.alert("Quitter", "Voulez-vous vraiment quitter la partie en cours ?", [
+                {
+                    text: "Annuler",
+                    onPress: () => null,
+                    style: "cancel"
+                },
+                {
+                    text: "Oui", onPress: () => router.push({
+                        pathname: '/',
+                    })}
+            ]);
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+        );
+
+        return () => backHandler.remove();
+    }, []);
 
     const handleNextTurn = () => {
         if (winnerTurn == ''){
@@ -124,9 +155,14 @@ export default function Petanque(){
             )}
             <Scores table={table}/>
             {isFinish && (
-                <TouchableOpacity style={styles.restartButton} onPress={restartGame}>
-                    <Text style={styles.restartButtonText}>Redémarrer le jeu</Text>
-                </TouchableOpacity>
+                <View style={styles.container}>
+                    <TouchableOpacity style={styles.restartButton} onPress={restartGame}>
+                        <Text style={styles.restartButtonText}>Redémarrer le jeu</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.restartButton} onPress={changeGame}>
+                        <Text style={styles.restartButtonText}>Changer de jeu</Text>
+                    </TouchableOpacity>
+                </View>
             )}
         </View>
     );
