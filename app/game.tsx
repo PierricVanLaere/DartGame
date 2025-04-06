@@ -1,8 +1,10 @@
 import { useLocalSearchParams } from 'expo-router';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useState } from "react";
 import { styles } from "../constants/styles"
+import { useRouter } from 'expo-router';
+
 
 export default function GameScreen() {
     const { jsonPlayers, num, variant } = useLocalSearchParams < { jsonPlayers: string, num: string, variant: string}>();
@@ -40,6 +42,13 @@ export default function GameScreen() {
         setSecondMult('1')
         setThirdMult('1')
     };
+
+    const router = useRouter();
+    const changeGame = () => {
+        router.push({
+            pathname: '/',
+        });
+    }
 
     const firstInputRef = useRef<TextInput>(null);
     const secondInputRef = useRef<TextInput>(null);
@@ -111,6 +120,10 @@ export default function GameScreen() {
     const red = ['20','18','13','10','2','3','7','8','14','12']
     const green = ['1','4','6','15','17','19','16','11','9','5']
 
+    useEffect(() => {
+        
+    })
+
     return (
         <View style={styles.container}>
             {isFinish && (
@@ -134,6 +147,7 @@ export default function GameScreen() {
                     />
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
+                            disabled={first === '50' || first === '25' || first === ''}
                             style={[
                                 styles.button,
                                 red.includes(first) ? styles.buttonXRed : green.includes(first) ? styles.buttonXGreen : styles.buttonXBlack,
@@ -146,6 +160,7 @@ export default function GameScreen() {
                             <Text style={styles.buttonText}>X2</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
+                            disabled={first === '50' || first === '25' || first === ''}
                             style={[
                                 styles.button,
                                 red.includes(first) ? styles.buttonXRed : green.includes(first) ? styles.buttonXGreen : styles.buttonXBlack,
@@ -175,6 +190,7 @@ export default function GameScreen() {
                     />
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
+                            disabled={second === '50' || second === '25' || second === ''}
                             style={[
                                 styles.button,
                                 red.includes(second) ? styles.buttonXRed : green.includes(second) ? styles.buttonXGreen : styles.buttonXBlack,
@@ -187,6 +203,7 @@ export default function GameScreen() {
                             <Text style={styles.buttonText}>X2</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
+                            disabled={second === '50' || second === '25' || second === ''}
                             style={[
                                 styles.button,
                                 red.includes(second) ? styles.buttonXRed : green.includes(second) ? styles.buttonXGreen : styles.buttonXBlack,
@@ -216,6 +233,7 @@ export default function GameScreen() {
                     />
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
+                            disabled={third === '50' || third === '25' || third === ''}
                             style={[
                                 styles.button,
                                 red.includes(third) ? styles.buttonXRed : green.includes(third) ? styles.buttonXGreen : styles.buttonXBlack,
@@ -228,6 +246,7 @@ export default function GameScreen() {
                             <Text style={styles.buttonText}>X2</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
+                            disabled={third === '50' || third === '25' || third === ''}
                             style={[
                                 styles.button,
                                 red.includes(third) ? styles.buttonXRed : green.includes(third) ? styles.buttonXGreen : styles.buttonXBlack,
@@ -255,9 +274,15 @@ export default function GameScreen() {
             )}
             <Scores table={table} current = {currentPlayer}/>
             {isFinish && (
-                <TouchableOpacity style={styles.restartButton} onPress={restartGame}>
-                    <Text style={styles.restartButtonText}>Redémarrer le jeu</Text>
-                </TouchableOpacity>
+                <View style={styles.container}>
+                    <TouchableOpacity style={styles.restartButton} onPress={restartGame}>
+                        <Text style={styles.restartButtonText}>Redémarrer le jeu</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.restartButton} onPress={changeGame}>
+                        <Text style={styles.restartButtonText}>Changer de jeu</Text>
+                    </TouchableOpacity>
+                </View>
+
             )}
         </View>
     );
